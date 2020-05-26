@@ -4,9 +4,11 @@ import ups.edu.dao.TelefonoDAO;
 import ups.edu.entidades.Telefono;
 import ups.edu.entidades.Usuario;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -27,38 +29,37 @@ public class JPATelefonoDAO extends JPAGenericDAO<Telefono, Integer> implements 
 
 	@Override
 	public Telefono findById(Integer id) {
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<Telefono> criteriaQuery = criteriaBuilder.createQuery(Telefono.class);
-
-		Root<Telefono> usuarioRoot = criteriaQuery.from(Telefono.class);
-
-		Predicate predicate = criteriaBuilder.equal(usuarioRoot.get("cedula"), id);
-
-		criteriaQuery.select(usuarioRoot).where(predicate);
-
+		Telefono telefono = new Telefono();
+		em.getTransaction().begin();
+		String consulta = ("SELECT t FROM Telefono t WHERE t.id='" + id + "'");
 		try {
-			return em.createQuery(criteriaQuery).getSingleResult();
-		} catch (NoResultException e) {
-			return new Telefono();
+			//telefono = (Telefono) em.createQuery(consulta).getSingleResult();
+			telefono = (Telefono) em.createQuery(consulta).getSingleResult();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
 		}
+		return telefono;
 	}
 
 	@Override
-	public List<Telefono> findByUserId(String id) {
-		Usuario usuario = JPADAOFactory.getDAOFactory().getUsuarioDAO().read(id);
+	public List<Telefono> findByUserId(String cedula) {
+		  List<Telefono> telefonos = new ArrayList<>();
+		  em.getTransaction().begin();
+		  String consulta=("SELECT t FROM Telefono t WHERE t.usuario_cedula='"+cedula+"'");
+		  //Query query = em.createQuery( "SELECT t " + "FROM Telefono t " + "WHERE t.usuario_cedula='"+cedula+"'");
+		  try {
+				telefonos = (List<Telefono>) em.createQuery(consulta).getSingleResult();
+			  //List<Telefono> list=(List<Telefono>)query.getResultList();
+		  } catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.getMessage());
+			}
+	      return telefonos;
+	    }
 
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<Telefono> criteriaQuery = criteriaBuilder.createQuery(Telefono.class);
-
-		Root<Telefono> telefonoRoot = criteriaQuery.from(Telefono.class);
-
-		Predicate predicado = criteriaBuilder.equal(telefonoRoot.get("usuario"), usuario);
-
-		criteriaQuery.select(telefonoRoot).where(predicado);
-
-		return em.createQuery(criteriaQuery).getResultList();
+	@Override
+	public List<Telefono> find() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
-
 }

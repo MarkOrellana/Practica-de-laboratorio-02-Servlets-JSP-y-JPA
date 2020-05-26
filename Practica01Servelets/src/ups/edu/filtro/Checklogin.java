@@ -99,7 +99,7 @@ public class Checklogin implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession sesion = req.getSession();
         
-        System.err.println("Filtro en loggion y registro....");
+        System.err.println("Filtro en login y registro....");
 
         if (String.valueOf(sesion.getAttribute("sesionID")).equals(String.valueOf(sesion.getId()))) {
             

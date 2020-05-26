@@ -31,12 +31,6 @@ public abstract class JPAGenericDAO<T, ID> implements GenericDAO<T, ID> {
 				em.getTransaction().rollback();
 		}
 	}
-
-	@Override
-	public T read(ID id) {
-		return em.find(persistentClass, id);
-	}
-
 	@Override
 	public void update(T entity) {
 		em.getTransaction().begin();
@@ -63,29 +57,4 @@ public abstract class JPAGenericDAO<T, ID> implements GenericDAO<T, ID> {
 				em.getTransaction().rollback();
 		}
 	}
-
-	// @Override
-	// public void deleteByID(ID id) {
-	// T entity = this.read(id);
-	// if (entity != null)
-	// this.delete(entity);
-	// }
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public List<T> find() {
-		em.getTransaction().begin();
-		List<T> lista = null;
-		try {
-			javax.persistence.criteria.CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-			cq.select(cq.from(persistentClass));
-			lista = em.createQuery(cq).getResultList();
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return lista;
-
-	}
-
 }

@@ -15,5 +15,5 @@ public interface GenericDAO<T, ID> {
 
     public List<T> find();
 
-	public T read(ID id);
+	//public T read(ID id);
 }
